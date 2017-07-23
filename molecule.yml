@@ -1,0 +1,12 @@
+---
+ansible:
+  playbook: playbook.yml
+
+docker:
+  containers:
+    - name: environment
+      image: brandfrisch/ubuntu-16.04
+      image_version: 'latest'
+
+verifier:
+  name: goss

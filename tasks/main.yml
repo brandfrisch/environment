@@ -1,0 +1,50 @@
+---
+# tasks file for environment
+
+- name: Install requirements
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ environment_packages }}"
+    - "{{ environment_additional_packages }}"
+  tags:
+    - package
+    - environment
+
+- name: Generate locales
+  locale_gen:
+    name: "{{ item }}"
+  with_items:
+    - "{{ environment_locales }}"
+  tags:
+    - setup
+    - environment
+
+- name: Set localtime
+  file:
+    src: "/usr/share/zoneinfo/{{ environment_timezone }}"
+    dest: "/etc/localtime"
+    state: link
+    force: true
+  notify: "Restart rsyslog"
+  tags:
+    - config
+    - environment
+
+- name: Set timezone
+  copy:
+    content: "{{ environment_timezone }}{{ '\n' }}"
+    dest: /etc/timezone
+  notify: "Restart rsyslog"
+  tags:
+    - config
+    - environment
+
+- name: Set defaults
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/default/{{ item }}"
+  with_items:
+    - keyboard
+    - locale

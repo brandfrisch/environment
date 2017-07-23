@@ -1,0 +1,28 @@
+---
+
+- hosts: all
+  gather_facts: no
+  vars:
+    goss:
+      file:
+        /etc/default/locale:
+          exists: true
+        /etc/timezone:
+          exists: true
+      package:
+        locales:
+          installed: true
+        tzdata:
+          installed: true
+
+  pre_tasks:
+
+    - name: Copy tests to remote
+      copy:
+        content: "{{ goss | to_nice_yaml }}"
+        dest: "/tmp/goss.yml"
+
+    - name: test goss files
+      goss:
+        path: "/tmp/goss.yml"
+        format: documentation
