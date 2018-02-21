@@ -1,4 +1,4 @@
-environment [![Build Status](https://travis-ci.org/brandfrisch/environment.svg?branch=master)](https://travis-ci.org/brandfrisch/environment)
+environment
 =========
 
 This is a rule to setup the environment on a unix system

@@ -1,0 +1,47 @@
+---
+version: 2
+jobs:
+  build:
+
+    docker:
+      - image: docker:stable
+
+    working_directory: ~/environment
+
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - checkout:
+          path: ~/environment
+
+      - run:
+          name: "Install tools"
+          command: "apk add --update python python-dev py-pip build-base
+                    openssl-dev libffi-dev linux-headers"
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            - v1-dependencies-
+
+      - run:
+          name: "Install virtualenv"
+          command: |
+            pip install virtualenv
+            virtualenv ~/.venv
+            source ~/.venv/bin/activate
+            pip install -r requirements.txt
+
+
+      - save_cache:
+          paths:
+            - ~/.venv
+            - ~/.cache/pip
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: "run tests"
+          command: |
+            source ~/.venv/bin/activate
+            molecule test
