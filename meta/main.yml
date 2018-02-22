@@ -1,9 +1,10 @@
+---
 galaxy_info:
   author: Alexander Jäger
   description: your description
   company: Brandfrisch
   license: Apache License 2.0
-  min_ansible_version: 2.1
+  min_ansible_version: 2.4
   platforms:
     - name: Debian
       versions:

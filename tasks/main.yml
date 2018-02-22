@@ -36,6 +36,9 @@
   copy:
     content: "{{ environment_timezone }}{{ '\n' }}"
     dest: /etc/timezone
+    owner: root
+    group: root
+    mode: 0644
   notify: "Restart rsyslog"
   tags:
     - config
@@ -45,6 +48,9 @@
   template:
     src: "{{ item }}.j2"
     dest: "/etc/default/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
   with_items:
     - keyboard
     - locale
