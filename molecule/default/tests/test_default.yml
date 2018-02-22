@@ -1,0 +1,12 @@
+---
+
+file:
+  /etc/default/locale:
+    exists: true
+  /etc/timezone:
+    exists: true
+package:
+  locales:
+    installed: true
+  tzdata:
+    installed: true

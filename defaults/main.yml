@@ -2,12 +2,12 @@
 # defaults file for environment
 
 environment_locales:
-    - 'de_DE'
-    - 'de_DE.UTF-8'
-    - 'de_DE@euro'
-    - 'en_US'
-    - 'en_US.ISO-8859-15'
-    - 'en_US.UTF-8'
+  - 'de_DE'
+  - 'de_DE.UTF-8'
+  - 'de_DE@euro'
+  - 'en_US'
+  - 'en_US.ISO-8859-15'
+  - 'en_US.UTF-8'
 
 environment_default_locale: "en_US.UTF-8"
 environment_timezone: "Etc/UTC"
