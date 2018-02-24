@@ -78,7 +78,7 @@ jobs:
       - run:
           name: "Release role"
           command: |
-            ./node_modules/.bin/semantic-release --tag-format '${version}'
+            ./node_modules/.bin/semantic-release
 
 workflows:
   version: 2
