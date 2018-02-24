@@ -1,0 +1,27 @@
+{
+  "name": "environment",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://github.com/brandfrisch/environment.git"
+  },
+  "author": "Alexander Jaeger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brandfrisch/environment/issues"
+  },
+  "homepage": "https://github.com/brandfrisch/environment#readme",
+  "release": {
+    "verifyConditions": [],
+    "publish": [
+      {
+        "path": "@semantic-release/github"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@semantic-release/exec": "^2.0.1",
+    "semantic-release": "^13.4.1"
+  }
+}

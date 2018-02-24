@@ -2,45 +2,107 @@
 version: 2
 jobs:
   build:
-
-    docker:
-      - image: docker:stable
+    machine:
+      enabled: true
 
     working_directory: ~/environment
 
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-
       - checkout:
           path: ~/environment
 
       - run:
-          name: "Install tools"
-          command: "apk add --update python python-dev py-pip build-base
-                    openssl-dev libffi-dev linux-headers"
+          name: "System package update"
+          command: |
+            sudo apt-get update
+
+      - run:
+          name: "Install python & tools"
+          command: |
+            sudo apt-get install -yq python python-pip
+            pip install --upgrade pip
+            pip install virtualenv
+
+      - run:
+          name: "Write daily cache key"
+          command: |
+            date +%F > ~/.daily_cache_key
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
-            - v1-dependencies-
+            - v4-dependencies-pip-{{ checksum "~/.daily_cache_key" }}
 
       - run:
-          name: "Install virtualenv"
+          name: "Install python dependencies"
           command: |
-            pip install virtualenv
             virtualenv ~/.venv
             source ~/.venv/bin/activate
             pip install -r requirements.txt
+            deactivate
 
       - save_cache:
           paths:
             - ~/.venv
             - ~/.cache/pip
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+          key: v4-dependencies-pip-{{ checksum "~/.daily_cache_key" }}
 
       - run:
-          name: "run tests"
+          name: "Run tests"
           command: |
             source ~/.venv/bin/activate
             molecule test
+
+  release:
+    docker:
+      - image: circleci/node:8
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-node-{{ checksum "package.json" }}
+
+      - run:
+          name: "Install node dependencies"
+          command: |
+            npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-node-{{ checksum "package.json" }}
+
+      - run:
+          name: "Release role"
+          command: |
+            ./node_modules/.bin/semantic-release --tag-format '${version}'
+
+workflows:
+  version: 2
+
+  commit-workflow:
+    jobs:
+      - build
+      - release:
+          context: ansible-roles
+          requires:
+            - build
+
+  scheduled-workflow:
+    triggers:
+      - schedule:
+          cron: "0 1 * * *"
+          filters:
+            branches:
+              only:
+                - master
+
+    jobs:
+      - build
+      - release:
+          context: ansible-roles
+          requires:
+            - build
