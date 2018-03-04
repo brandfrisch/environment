@@ -13,7 +13,8 @@
   },
   "homepage": "https://github.com/brandfrisch/environment#readme",
   "scripts": {
-    "commitmsg": "commitlint -e $GIT_PARAMS"
+    "commitmsg": "commitlint -e ",
+    "precommit": "yamllint . && ansible-lint ."
   },
   "commitlint": {
     "extends": [
